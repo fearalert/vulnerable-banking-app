@@ -35,13 +35,13 @@ if account.user != request.user:
     return redirect('dashboard')
 ```
 
-**Fix Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/main/banking/views.py#L48`
+**Fix Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/banking/views.py#L48`
 
 This fix ensures that users can only view accounts they own, logging unauthorized access attempts for security monitoring. The same principle should be applied to the `transfer_money` view to prevent unauthorized transfers from other users' accounts.
 
 ## FLAW 2: A02:2021 – Cryptographic Failures
 
-**Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/main/banking/models.py#L8`
+**Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/banking/models.py#L8`
 
 **Description of Flaw:**
 The application stores user passwords in plaintext within the `UserProfile` model's `plaintext_password` field. This represents a severe cryptographic failure that exposes all user credentials if the database is compromised. The login mechanism in `views.py` performs direct string comparison between the submitted password and the stored plaintext value, completely bypassing Django's built-in password hashing system.
@@ -60,7 +60,7 @@ if user is not None:
     return redirect('dashboard')
 ```
 
-**Fix Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/main/banking/views.py#L40`
+**Fix Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/banking/views.py#L40`
 
 Django automatically handles password hashing using PBKDF2 with SHA256, making passwords computationally expensive to crack even if the database is compromised.
 
@@ -85,7 +85,7 @@ with connection.cursor() as cursor:
     results = cursor.fetchall()
 ```
 
-**Fix Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/main/banking/views.py#L101`
+**Fix Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/banking/views.py#L101`
 
 Parameterized queries ensure that user input is treated as data only, not as executable SQL code, completely eliminating the injection vector.
 
@@ -119,13 +119,13 @@ SESSION_COOKIE_AGE = 1800  # 30 minutes
 
 **Fix Source Links:**
 
-- Password validation: `https://github.com/fearalert/vulnerable-banking-app/blob/main/vulnerable_banking/settings.py#L65`
-- Session timeout: `https://github.com/fearalert/vulnerable-banking-app/blob/main/vulnerable_banking/settings.py#L81`
-- CSRF protection: `https://github.com/fearalert/vulnerable-banking-app/blob/main/vulnerable_banking/settings.py#L24`
+- Password validation: `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/vulnerable_banking/settings.py#L65`
+- Session timeout: `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/vulnerable_banking/settings.py#L81`
+- CSRF protection: `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/vulnerable_banking/settings.py#L24`
 
 ## FLAW 5: A09:2021 – Security Logging and Monitoring Failures
 
-**Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/main/banking/views.py#L30`
+**Source Link:** `https://github.com/fearalert/vulnerable-banking-app/blob/fix-vulnerabilities/banking/views.py#L30`
 
 **Description of Flaw:**
 The application completely lacks security event logging. All security-related logging statements are commented out throughout the codebase, including failed login attempts, unauthorized access attempts, suspicious search queries, and logout events. This creates a blind spot where security incidents go undetected and unrecorded, making it impossible to identify attack patterns, conduct forensic analysis, or respond to security breaches effectively.

@@ -29,22 +29,22 @@ def login_view(request):
                     return redirect('dashboard')
                 else:
                     # FLAW 5: No logging of failed login attempts - VULNERABILITY
-                    # security_logger.warning(f"Failed login attempt for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
+                    security_logger.warning(f"Failed login attempt for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
                     messages.error(request, 'Invalid credentials')
             except UserProfile.DoesNotExist:
                 # FLAW 5: No logging of failed login attempts - VULNERABILITY
-                # security_logger.warning(f"Login attempt for non-existent user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
+                security_logger.warning(f"Login attempt for non-existent user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
                 messages.error(request, 'Invalid credentials')
             
             # FIX for FLAW 2: Use Django's built-in authentication
-            # user = authenticate(request, username=username, password=password)
-            # if user is not None:
-            #     login(request, user)
-            #     security_logger.info(f"Successful login for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
-            #     return redirect('dashboard')
-            # else:
-            #     security_logger.warning(f"Failed login attempt for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
-            #     messages.error(request, 'Invalid credentials')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                security_logger.info(f"Successful login for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
+                return redirect('dashboard')
+            else:
+                security_logger.warning(f"Failed login attempt for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
+                messages.error(request, 'Invalid credentials')
     else:
         form = LoginForm()
     
@@ -61,10 +61,10 @@ def account_details(request, account_id):
     account = get_object_or_404(Account, id=account_id)
     
     # FIX for FLAW 1: Check if user owns the account
-    # if account.user != request.user:
-    #     security_logger.warning(f"Unauthorized access attempt by {request.user.username} to account {account_id} from IP: {request.META.get('REMOTE_ADDR')}")
-    #     messages.error(request, 'Access denied')
-    #     return redirect('dashboard')
+    if account.user != request.user:
+        security_logger.warning(f"Unauthorized access attempt by {request.user.username} to account {account_id} from IP: {request.META.get('REMOTE_ADDR')}")
+        messages.error(request, 'Access denied')
+        return redirect('dashboard')
     
     transactions = Transaction.objects.filter(account=account)[:20]
     return render(request, 'banking/account_details.html', {
@@ -86,10 +86,10 @@ def transfer_money(request):
             from_account = get_object_or_404(Account, id=from_account_id)
             
             # FIX: Check if user owns the from_account
-            # if from_account.user != request.user:
-            #     security_logger.warning(f"Unauthorized transfer attempt by {request.user.username} from account {from_account_id}")
-            #     messages.error(request, 'Access denied')
-            #     return redirect('dashboard')
+            if from_account.user != request.user:
+                security_logger.warning(f"Unauthorized transfer attempt by {request.user.username} from account {from_account_id}")
+                messages.error(request, 'Access denied')
+                return redirect('dashboard')
             
             try:
                 to_account = Account.objects.get(account_number=to_account_number)
@@ -137,15 +137,15 @@ def search_transactions(request):
             results = cursor.fetchall()
         
         # FIX for FLAW 3: Use parameterized queries
-        # with connection.cursor() as cursor:
-        #     cursor.execute(
-        #         "SELECT * FROM banking_transaction WHERE description LIKE %s",
-        #         [f'%{query}%']
-        #     )
-        #     results = cursor.fetchall()
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM banking_transaction WHERE description LIKE %s",
+                [f'%{query}%']
+            )
+            results = cursor.fetchall()
         
         # FLAW 5: No logging of search queries - VULNERABILITY
-        # security_logger.info(f"Transaction search by {request.user.username}: '{query}' from IP: {request.META.get('REMOTE_ADDR')}")
+        security_logger.info(f"Transaction search by {request.user.username}: '{query}' from IP: {request.META.get('REMOTE_ADDR')}")
     
     return render(request, 'banking/search.html', {
         'query': query,
@@ -154,6 +154,6 @@ def search_transactions(request):
 
 def logout_view(request):
     # FLAW 5: No logging of logout events - VULNERABILITY
-    # security_logger.info(f"User logout: {request.user.username} from IP: {request.META.get('REMOTE_ADDR')}")
+    security_logger.info(f"User logout: {request.user.username} from IP: {request.META.get('REMOTE_ADDR')}")
     logout(request)
     return redirect('login')

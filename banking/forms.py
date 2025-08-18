@@ -9,21 +9,21 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
     
     # FIX: Add password validation
-    # password = forms.CharField(
-    #     widget=forms.PasswordInput,
-    #     min_length=8,
-    #     help_text="Password must be at least 8 characters long"
-    # )
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        min_length=8,
+        help_text="Password must be at least 8 characters long"
+    )
     
-    # def clean_password(self):
-    #     password = self.cleaned_data.get('password')
-    #     if len(password) < 8:
-    #         raise forms.ValidationError("Password must be at least 8 characters long")
-    #     if password.isdigit():
-    #         raise forms.ValidationError("Password cannot be entirely numeric")
-    #     if password.lower() in ['password', '12345678', 'qwerty']:
-    #         raise forms.ValidationError("Password is too common")
-    #     return password
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long")
+        if password.isdigit():
+            raise forms.ValidationError("Password cannot be entirely numeric")
+        if password.lower() in ['password', '12345678', 'qwerty']:
+            raise forms.ValidationError("Password is too common")
+        return password
 
 class TransferForm(forms.Form):
     from_account = forms.IntegerField(widget=forms.HiddenInput())

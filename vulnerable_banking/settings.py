@@ -4,7 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # FLAW 2: Cryptographic Failures - Debug mode enabled in production
-DEBUG = True  # Should be False in production
+DEBUG = False  # Should be False in production
 ALLOWED_HOSTS = ['*']  # Should be specific hosts
 
 SECRET_KEY = 'django-insecure-your-secret-key-here'
@@ -24,7 +24,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # FLAW 4: CSRF protection disabled
-    # 'django.middleware.csrf.CsrfViewMiddleware',  # COMMENTED OUT - VULNERABILITY
+    'django.middleware.csrf.CsrfViewMiddleware',  # COMMENTED OUT - VULNERABILITY
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -62,27 +62,28 @@ DATABASES = {
 # Line 63: Weak password validation - All validators commented out - VULNERABILITY
 AUTH_PASSWORD_VALIDATORS = [
     # All validators commented out allows weak passwords like "123"
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    #     'OPTIONS': {
-    #         'min_length': 8,
-    #     }
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 # FLAW 4: A07:2021 - Identification and Authentication Failures  
-# Line 81: No session timeout - Sessions last 1 year - VULNERABILITY
-SESSION_COOKIE_AGE = 86400 * 365  # 1 year - VULNERABILITY
-# FIX: SESSION_COOKIE_AGE = 1800  # 30 minutes
+# Line: No session timeout - Sessions last 1 year - VULNERABILITY
+# SESSION_COOKIE_AGE = 86400 * 365  # 1 year - VULNERABILITY
+# FIX: 
+SESSION_COOKIE_AGE = 1800  # 30 minutes
 
 # FLAW 5: Logging disabled
 LOGGING = {
