@@ -7,7 +7,7 @@ class UserProfile(models.Model):
     # FLAW 2: A02:2021 - Cryptographic Failures
     # Line 8: Storing password in plaintext - VULNERABILITY
     # This exposes all passwords if database is compromised
-    plaintext_password = models.CharField(max_length=100)
+    # plaintext_password = models.CharField(max_length=100)
     # FIX: Remove this field entirely, use Django's built-in hashed password system
     
     phone = models.CharField(max_length=15)
