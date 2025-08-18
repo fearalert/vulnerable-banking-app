@@ -1,0 +1,28 @@
+<!-- banking/templates/banking/login.html -->
+{% extends 'banking/base.html' %}
+
+{% block title %}Login - Vulnerable Banking{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+
+<!-- FLAW 4: No CSRF protection -->
+<form method="post">
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username:</label>
+        {{ form.username }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">Password:</label>
+        {{ form.password }}
+        <small>Hint: Try weak passwords like "123" or "password"</small>
+    </div>
+    <button type="submit" class="btn">Login</button>
+</form>
+
+<div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+    <h3>Test Accounts:</h3>
+    <p>Create test accounts via Django admin: <a href="/admin/">/admin/</a></p>
+    <p>Remember to set plaintext_password field in UserProfile for the vulnerability to work!</p>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'banking/base.html' %}
+
+{% block title %}Dashboard - Vulnerable Banking{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ user.first_name|default:user.username }}!</h2>
+
+<h3>Your Accounts</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Account Number</th>
+            <th>Type</th>
+            <th>Balance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for account in accounts %}
+        <tr>
+            <td>{{ account.account_number }}</td>
+            <td>{{ account.get_account_type_display }}</td>
+            <td>${{ account.balance }}</td>
+            <td>
+                <a href="{% url 'account_details' account.id %}">View Details</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No accounts found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 2rem;">
+    <h3>Security Vulnerability Testing</h3>
+    <p><strong>Test Flaw 1 (Broken Access Control):</strong> Try accessing /account/[other_user_account_id]/</p>
+    <p><strong>Test Flaw 3 (SQL Injection):</strong> Use search with: <code>'; DROP TABLE banking_account; --</code></p>
+</div>
+{% endblock %}

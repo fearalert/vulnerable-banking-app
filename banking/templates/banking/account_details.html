@@ -1,0 +1,43 @@
+<!-- banking/templates/banking/account_details.html -->
+{% extends 'banking/base.html' %}
+
+{% block title %}Account Details - Vulnerable Banking{% endblock %}
+
+{% block content %}
+<h2>Account Details</h2>
+
+<div style="background: #f8f9fa; padding: 1rem; margin-bottom: 2rem; border-radius: 4px;">
+    <h3>{{ account.account_number }} ({{ account.get_account_type_display }})</h3>
+    <p><strong>Owner:</strong> {{ account.user.first_name }} {{ account.user.last_name }} ({{ account.user.username }})
+    </p>
+    <p><strong>Balance:</strong> ${{ account.balance }}</p>
+</div>
+
+<h3>Recent Transactions</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.timestamp|date:"Y-m-d H:i" }}</td>
+            <td>{{ transaction.get_transaction_type_display }}</td>
+            <td>${{ transaction.amount }}</td>
+            <td>{{ transaction.description }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No transactions found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'dashboard' %}" class="btn">Back to Dashboard</a>
+{% endblock %}

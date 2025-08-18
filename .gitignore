@@ -1,0 +1,61 @@
+# vulnerable-banking-app/.gitignore
+
+
+# Ignore migrations
+migrations/
+*.migrations/
+# Ignore static files
+static/
+media/
+# Ignore local settings
+local_settings.py
+# Ignore test files
+tests/
+# Ignore coverage reports
+coverage.xml
+htmlcov/
+.coverage
+# Ignore database files
+*.db
+*.sqlite3
+# Ignore virtual environment
+venv/
+# Ignore IDE specific files
+.idea/
+.vscode/
+# Ignore logs
+*.log
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+# Ignore Docker files
+Dockerfile
+docker-compose.yml
+# Ignore environment variables
+.env
+# Ignore sensitive files
+secrets.json
+# Ignore cache files
+__pycache__/
+# Ignore backup files
+*.bak
+# Ignore temporary files
+*.tmp
+# Ignore coverage reports
+coverage/
+# Ignore PyCharm project files
+*.iml
+# Ignore Pytest cache
+.cache/
+# Ignore Django secret key file
+secret_key.txt
+# Ignore sensitive configuration files
+config.json
+# Ignore sensitive data files
+sensitive_data.json
+# Ignore logs
+logs/
+# Ignore test output files
+test_output/

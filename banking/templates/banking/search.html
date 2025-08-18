@@ -1,0 +1,59 @@
+{% extends 'banking/base.html' %}
+
+{% block title %}Search Transactions - Vulnerable Banking{% endblock %}
+
+{% block content %}
+<h2>🔍 Search Transactions</h2>
+
+<form method="get">
+    <div class="form-group">
+        <label for="q">Search Description:</label>
+        <input type="text" name="q" id="q" value="{{ query }}" placeholder="Enter search term">
+        <small style="color: red;">⚠️ Warning: This search is vulnerable to SQL injection!</small>
+    </div>
+    <button type="submit" class="btn">🔍 Search</button>
+</form>
+
+{% if query %}
+<h3>📊 Search Results for "{{ query }}"</h3>
+{% if results %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Account ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.0 }}</td>
+            <td>{{ result.1 }}</td>
+            <td>{{ result.2 }}</td>
+            <td>${{ result.3 }}</td>
+            <td>{{ result.4 }}</td>
+            <td>{{ result.6 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No results found.</p>
+{% endif %}
+{% endif %}
+
+<div class="vulnerability-warning">
+    <h3>🔴 SQL Injection Test Examples</h3>
+    <p>Try these malicious inputs:</p>
+    <ul>
+        <li><span class="code">' OR '1'='1</span> - Shows all transactions</li>
+        <li><span class="code">'; SELECT * FROM auth_user; --</span> - Attempts to show user data</li>
+        <li><span class="code">' UNION SELECT id,username,password,email,first_name,last_name FROM auth_user --</span> -
+            Union attack</li>
+    </ul>
+</div>
+{% endblock %}
