@@ -1,28 +1,38 @@
-<!-- banking/templates/banking/login.html -->
 {% extends 'banking/base.html' %}
-
-{% block title %}Login - Vulnerable Banking{% endblock %}
-
+{% block title %}Login - Modern Banking{% endblock %}
 {% block content %}
-<h2>Login</h2>
+<div class="card">
+    <h2 style="margin-bottom: 1.5rem; color: var(--text-primary); font-weight: 700;">Login to Your Account</h2>
 
-<!-- FLAW 4: No CSRF protection -->
-<form method="post">
-    <div class="form-group">
-        <label for="{{ form.username.id_for_label }}">Username:</label>
-        {{ form.username }}
-    </div>
-    <div class="form-group">
-        <label for="{{ form.password.id_for_label }}">Password:</label>
-        {{ form.password }}
-        <small>Hint: Try weak passwords like "123" or "password"</small>
-    </div>
-    <button type="submit" class="btn">Login</button>
-</form>
+    <!-- FIXED: Added CSRF protection -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+            <small style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem; display: block;">
+                Hint: Try weak passwords like "123" or "password"
+            </small>
+        </div>
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Login</button>
+    </form>
 
-<div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
-    <h3>Test Accounts:</h3>
-    <p>Create test accounts via Django admin: <a href="/admin/">/admin/</a></p>
-    <p>Remember to set plaintext_password field in UserProfile for the vulnerability to work!</p>
+    <div
+        style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.125rem;">Test Accounts:</h3>
+        <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">
+            Create test accounts via Django admin:
+            <a href="/admin/" style="color: var(--highlight-color); text-decoration: none; font-weight: 500;">
+                /admin/
+            </a>
+        </p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
+            Remember to set plaintext_password field in UserProfile for the vulnerability to work!
+        </p>
+    </div>
 </div>
 {% endblock %}

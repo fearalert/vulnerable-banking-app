@@ -4,7 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # FLAW 2: Cryptographic Failures - Debug mode enabled in production
-DEBUG = False  # Should be False in production
+DEBUG = True # Should be False in production
 ALLOWED_HOSTS = ['*']  # Should be specific hosts
 
 SECRET_KEY = 'django-insecure-your-secret-key-here'

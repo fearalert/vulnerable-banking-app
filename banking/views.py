@@ -20,35 +20,28 @@ def login_view(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             
-            # FLAW 2: Plaintext password comparison - VULNERABILITY
-            try:
-                user_profile = UserProfile.objects.get(user__username=username)
-                if user_profile.plaintext_password == password:
-                    user = user_profile.user
-                    login(request, user)
-                    return redirect('dashboard')
-                else:
-                    # FLAW 5: No logging of failed login attempts - VULNERABILITY
-                    security_logger.warning(f"Failed login attempt for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
-                    messages.error(request, 'Invalid credentials')
-            except UserProfile.DoesNotExist:
-                # FLAW 5: No logging of failed login attempts - VULNERABILITY
-                security_logger.warning(f"Login attempt for non-existent user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
-                messages.error(request, 'Invalid credentials')
-            
-            # FIX for FLAW 2: Use Django's built-in authentication
+            # FIXED: Use Django's built-in authentication instead of plaintext comparison
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 security_logger.info(f"Successful login for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
+                messages.success(request, f'Welcome back, {username}!')
                 return redirect('dashboard')
             else:
+                # FIXED: Proper logging of failed login attempts
                 security_logger.warning(f"Failed login attempt for user: {username} from IP: {request.META.get('REMOTE_ADDR')}")
                 messages.error(request, 'Invalid credentials')
+        else:
+            # Log form validation errors
+            security_logger.warning(f"Login form validation failed from IP: {request.META.get('REMOTE_ADDR')}")
+            messages.error(request, 'Please correct the form errors.')
     else:
         form = LoginForm()
     
     return render(request, 'banking/login.html', {'form': form})
+
+
+
 
 @login_required
 def dashboard(request):
