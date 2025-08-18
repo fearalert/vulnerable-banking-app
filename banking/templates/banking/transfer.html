@@ -5,8 +5,9 @@
 {% block content %}
 <h2>💸 Transfer Money</h2>
 
-<!-- FLAW 4: No CSRF protection -->
+<!-- FLAW 4 Fixed: Added CSRF protection -->
 <form method="post">
+    {% csrf_token %}
     <div class="form-group">
         <label for="from_account">From Account:</label>
         <select name="from_account" id="from_account" required>
@@ -36,9 +37,10 @@
     <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-left: 1rem;">Cancel</a>
 </form>
 
+
 <div class="vulnerability-warning">
-    <h3>🔴 Access Control Vulnerability</h3>
-    <p>This form doesn't properly validate account ownership. Try transferring from another user's account by inspecting
+    <h3>🔴 Access Control Vulnerability Fixed</h3>
+    <p>This form properly validates account ownership now. Try transferring from another user's account by inspecting
         and modifying the from_account value!</p>
 </div>
 {% endblock %}

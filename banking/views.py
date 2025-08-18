@@ -81,7 +81,7 @@ def transfer_money(request):
             # FIX: Check if user owns the from_account
             if from_account.user != request.user:
                 security_logger.warning(f"Unauthorized transfer attempt by {request.user.username} from account {from_account_id}")
-                messages.error(request, 'Access denied')
+                messages.error(request, 'Access denied due to same account transfer')
                 return redirect('dashboard')
             
             try:
